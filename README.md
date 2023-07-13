@@ -284,7 +284,7 @@ plt.show()
 ![negword](image/neg.png)
 
 ### Frequency Distribution Plot 
-##### Frequency distribution plot to check the frequencies of each words in all reviews
+#### Frequency distribution plot to check the frequencies of each words in all reviews
 ```js
 fredi=nltk.word_tokenize(all_reviews)
 freqDist = FreqDist(fredi)
@@ -295,7 +295,7 @@ plt.show()
 ```
 ![allfreq](image/freq.png)
 
-##### Frequency distribution plot to check the frequencies of each words in positive reviews
+#### Frequency distribution plot to check the frequencies of each words in positive reviews
 ```js
 fredi=nltk.word_tokenize(pos_reviews)
 freqDist = FreqDist(fredi)
@@ -306,7 +306,7 @@ plt.show()
 ```
 ![posfreq](image/freq_pos.png)
 
-##### Frequency distribution plot to check the frequencies of each words in negative reviews
+#### Frequency distribution plot to check the frequencies of each words in negative reviews
 ```js
 fredi=nltk.word_tokenize(neg_reviews)
 freqDist = FreqDist(fredi)
