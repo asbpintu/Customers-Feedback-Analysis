@@ -249,6 +249,8 @@ neg_reviews = ' '.join(neg_reviews .tolist())
 plt.pie(data['target'].value_counts() , labels=['Positive','Negative'] , autopct='%1.0f%%')
 plt.show()
 ```
+![pie](image/pie.png)
+
 ### WordCloud
 
 #### All Reviews
@@ -259,6 +261,8 @@ plt.imshow(all_wordcloud, interpolation='bilinear')
 plt.axis('off')
 plt.show()
 ```
+![allword](image/all.png)
+
 #### Posotive Reviews
 ```js
 pos_wordcloud = WordCloud(random_state=42 , max_font_size=100).generate(pos_reviews)
@@ -267,6 +271,8 @@ plt.imshow(pos_wordcloud, interpolation='bilinear')
 plt.axis('off')
 plt.show()
 ```
+![posword](image/pos.png)
+
 #### Negative Reviews
 ```js
 neg_wordcloud = WordCloud(random_state=42 , max_font_size=100).generate(neg_reviews)
@@ -275,6 +281,8 @@ plt.imshow(neg_wordcloud, interpolation='bilinear')
 plt.axis('off')
 plt.show()
 ```
+![negword](image/neg.png)
+
 ### Frequency Distribution Plot 
 ##### Frequency distribution plot to check the frequencies of each words in all reviews
 ```js
@@ -285,6 +293,8 @@ plt.xticks([])
 freqDist.plot(70)
 plt.show()
 ```
+![allfreq](image/freq.png)
+
 ##### Frequency distribution plot to check the frequencies of each words in positive reviews
 ```js
 fredi=nltk.word_tokenize(pos_reviews)
@@ -294,6 +304,8 @@ plt.xticks([])
 freqDist.plot(50)
 plt.show()
 ```
+![posfreq](image/freq_pos.png)
+
 ##### Frequency distribution plot to check the frequencies of each words in negative reviews
 ```js
 fredi=nltk.word_tokenize(neg_reviews)
@@ -303,6 +315,7 @@ plt.xticks([])
 freqDist.plot(50)
 plt.show()
 ```
+![negfreq](image/freq_neg.png)
 
 ### vectorization
 
