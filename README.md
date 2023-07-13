@@ -498,10 +498,10 @@ grid_search.fit(X_train, y_train)
 # Print the best parameters and best score
 print("Best Parameters:", grid_search.best_params_)
 ```
-
+Best Parameters: {'max_depth': None, 'min_samples_split': 2, 'n_estimators': 100}
 ```js
 print("Best Score:", grid_search.best_score_)
 ```
-
+Best Score: 0.9365079365079365
 
 
