@@ -505,3 +505,223 @@ print("Best Score:", grid_search.best_score_)
 Best Score: 0.9365079365079365
 
 
+## Deep Learning Models Fitting
+
+The project may also employ deep learning techniques such as Artificial Neural Networks (ANN) and Recurrent Neural Networks (RNN) to capture more complex patterns and dependencies within the feedback data. These deep learning models are trained on large amounts of labeled data to learn the underlying sentiment patterns.
+
+ ### Artificial Neural Networks (ANN)
+
+#### Required Packages
+```js
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+import tensorflow as tf
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Flatten, Dense, LSTM
+```
+#### Reading new data
+```js
+new_df = pd.read_csv(r'C:\Users\asbpi\Desktop\Nit_DS & AI\MY Projects\project_sentiment analysis\new_data.csv')
+
+reviews = new_df['reviews']
+```
+#### Prepare Data
+```js
+# Convert any non-string elements to strings
+reviews = [str(review) for review in reviews]
+```
+```js
+# Remove null or NaN values
+reviews = [review for review in reviews if not pd.isnull(review)]
+```
+```js
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(reviews)
+word_index = tokenizer.word_index
+sequences = tokenizer.texts_to_sequences(reviews)
+padded_sequences = pad_sequences(sequences)
+```
+#### Splitting Data
+```js
+X = padded_sequences
+y = new_df['target']
+```
+```js
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+```
+
+#### Model Building
+```js
+model = Sequential()
+model.add(Embedding(len(word_index)+1, 100, input_length=X.shape[1]))
+model.add(Flatten())
+model.add(Dense(units=128, activation='relu'))
+model.add(Dense(units=64, activation='relu'))
+model.add(Dense(units=32, activation='relu'))
+model.add(Dense(units=1, activation='sigmoid'))
+```
+
+#### Compile the model
+```js
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+```
+
+#### Train the model
+```js
+model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_test, y_test))
+```
+```
+Epoch 1/50
+79/79 [==============================] - 5s 62ms/step - loss: 0.2893 - accuracy: 0.9159 - val_loss: 0.3047 - val_accuracy: 0.9079
+Epoch 2/50
+79/79 [==============================] - 4s 50ms/step - loss: 0.1760 - accuracy: 0.9377 - val_loss: 0.2082 - val_accuracy: 0.9190
+Epoch 3/50
+79/79 [==============================] - 3s 44ms/step - loss: 0.0781 - accuracy: 0.9714 - val_loss: 0.1989 - val_accuracy: 0.9286
+Epoch 4/50
+79/79 [==============================] - 3s 41ms/step - loss: 0.0382 - accuracy: 0.9857 - val_loss: 0.2376 - val_accuracy: 0.9349
+Epoch 5/50
+79/79 [==============================] - 3s 42ms/step - loss: 0.0306 - accuracy: 0.9893 - val_loss: 0.2540 - val_accuracy: 0.9317
+Epoch 6/50
+79/79 [==============================] - 3s 41ms/step - loss: 0.0239 - accuracy: 0.9929 - val_loss: 0.3320 - val_accuracy: 0.9429
+Epoch 7/50
+79/79 [==============================] - 3s 41ms/step - loss: 0.0280 - accuracy: 0.9901 - val_loss: 0.2770 - val_accuracy: 0.9397
+Epoch 8/50
+79/79 [==============================] - 3s 41ms/step - loss: 0.0236 - accuracy: 0.9917 - val_loss: 0.3003 - val_accuracy: 0.9333
+
+...
+
+Epoch 49/50
+79/79 [==============================] - 4s 46ms/step - loss: 0.0193 - accuracy: 0.9933 - val_loss: 0.4881 - val_accuracy: 0.9286
+Epoch 50/50
+79/79 [==============================] - 4s 47ms/step - loss: 0.0179 - accuracy: 0.9933 - val_loss: 0.4990 - val_accuracy: 0.9317
+```
+
+#### Evaluate the model
+```js
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy:", accuracy)
+print('Loss', loss)
+```
+```
+20/20 [==============================] - 0s 5ms/step - loss: 0.4990 - accuracy: 0.9317
+Accuracy: 0.9317460060119629
+Loss 0.49901625514030457
+```
+
+
+### Recurrent Neural Networks (RNN)
+
+
+#### Required Packages
+```js
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+import tensorflow as tf
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Flatten, Dense, LSTM
+```
+#### Reading new data
+```js
+new_df = pd.read_csv(r'C:\Users\asbpi\Desktop\Nit_DS & AI\MY Projects\project_sentiment analysis\new_data.csv')
+
+reviews = new_df['reviews']
+```
+#### Prepare Data
+```js
+# Convert any non-string elements to strings
+reviews = [str(review) for review in reviews]
+```
+```js
+# Remove null or NaN values
+reviews = [review for review in reviews if not pd.isnull(review)]
+```
+```js
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(reviews)
+word_index = tokenizer.word_index
+sequences = tokenizer.texts_to_sequences(reviews)
+padded_sequences = pad_sequences(sequences)
+```
+#### Splitting Data
+```js
+X = padded_sequences
+y = new_df['target']
+```
+```js
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+```
+
+#### Model Building
+
+```js
+# Build the RNN model
+model = Sequential()
+model.add(Embedding(len(word_index)+1, 100, input_length=X.shape[1]))
+model.add(LSTM(units=128, return_sequences=True))
+model.add(LSTM(units=64, return_sequences=True))
+model.add(LSTM(units=32))
+model.add(Dense(units=1, activation='sigmoid'))
+```
+
+#### Compling Model
+```js
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+```
+
+#### Train the model
+```js
+model.fit(X_train, y_train, epochs=50, batch_size=32)
+```
+```
+Epoch 1/50
+79/79 [==============================] - 26s 268ms/step - loss: 0.3027 - accuracy: 0.9115
+Epoch 2/50
+79/79 [==============================] - 20s 250ms/step - loss: 0.2783 - accuracy: 0.9210
+Epoch 3/50
+79/79 [==============================] - 18s 234ms/step - loss: 0.2770 - accuracy: 0.9210
+Epoch 4/50
+79/79 [==============================] - 19s 235ms/step - loss: 0.2672 - accuracy: 0.9210
+Epoch 5/50
+79/79 [==============================] - 18s 234ms/step - loss: 0.1634 - accuracy: 0.9393
+Epoch 6/50
+79/79 [==============================] - 19s 240ms/step - loss: 0.0879 - accuracy: 0.9702
+
+...
+
+Epoch 49/50
+79/79 [==============================] - 19s 241ms/step - loss: 0.0180 - accuracy: 0.9933
+Epoch 50/50
+79/79 [==============================] - 20s 258ms/step - loss: 0.0181 - accuracy: 0.9933
+O
+```
+
+#### Evaluate on the test set
+```js
+loss, accuracy = model.evaluate(X_test, y_test)
+print("Accuracy:", accuracy)
+print('Loss', loss)
+```
+```
+20/20 [==============================] - 2s 77ms/step - loss: 0.4572 - accuracy: 0.9302
+Accuracy: 0.9301587343215942
+Loss 0.45723387598991394
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
