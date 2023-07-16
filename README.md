@@ -977,13 +977,13 @@ and the best accuracy score is 93.6%
     + **Artificial Neural Networks (ANN)**
 
 
-        Accuracy: 93.1%
+        Accuracy: 93.1% , 
         Loss 49%
 
     + **Recurrent Neural Networks (RNN)**
 
 
-        Accuracy: 93.1%
+        Accuracy: 93.1% , 
         Loss 31%
 
 
