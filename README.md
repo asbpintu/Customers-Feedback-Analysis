@@ -6,7 +6,7 @@ The project involves conducting customer feedback analysis for Amazon Alexa. The
 
 ![commmm](image/review1.png)
 ![comm](image/reviews2.png) 
-![comm](image/reviews3.png)
+
 
 ### Necessary Packages
 ```js
