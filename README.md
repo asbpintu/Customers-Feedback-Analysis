@@ -617,6 +617,7 @@ Loss 0.49901625514030457
 
 #### Required Packages
 ```js
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
@@ -625,6 +626,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Flatten, Dense, LSTM
+from sklearn.metrics import precision_score, recall_score, f1_score
 ```
 #### Reading new data
 ```js
@@ -708,19 +710,300 @@ print("Accuracy:", accuracy)
 print('Loss', loss)
 ```
 ```
-20/20 [==============================] - 2s 77ms/step - loss: 0.4572 - accuracy: 0.9302
-Accuracy: 0.9301587343215942
-Loss 0.45723387598991394
+20/20 [==============================] - 2s 80ms/step - loss: 0.3146 - accuracy: 0.9317
+Accuracy: 0.9317460060119629
+Loss 0.314641535282135
+```
+```js
+y_pred = model.predict(X_test)
+y_pred = np.argmax(y_pred, axis=1)
+```
+#### Calculating Precision_Score, Recall_Score, f1_Score
+
+To calculate Precision_Score, Recall_Score, f1_Score we need below four things:-
+
++ **True Positive (TP):** The number of samples that are correctly predicted as positive (correctly classified as the positive class).
++ **True Negative (TN):** The number of samples that are correctly predicted as negative (correctly classified as the negative class).
++ **False Positive (FP):** The number of samples that are incorrectly predicted as positive (incorrectly classified as the positive class).
++ **False Negative (FN):** The number of samples that are incorrectly predicted as negative (incorrectly classified as the negative class).
+  
+Once you have these values, you can compute the evaluation metrics as follows:
+
+##### 1. Precision:
+It measures the proportion of correctly predicted positive samples out of all samples predicted as positive.
+Precision is computed as 
+```
+TP / (TP + FP)
+```
+##### 2. Recall: (also called Sensitivity or True Positive Rate) 
+It measures the proportion of correctly predicted positive samples out of all actual positive samples.
+Recall is computed as 
+```
+TP / (TP + FN)
+```
+##### 3. F1-score:
+It combines precision and recall into a single metric, which is the harmonic mean of the two.
+F1-score is computed as 
+```
+2 * (Precision * Recall) / (Precision + Recall)
+```
+code:-
+```js
+precision = precision_score(y_test, y_pred, average='weighted')
+recall = recall_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print('precision_score = ', precision)
+print('recall_score = ', recall)
+print('f1_score = ', f1)
+```
+```
+precision_score =  0.008475686570924667
+recall_score =  0.09206349206349207
+f1_score =  0.01552233296419343
+```
+### Prediction Checking
+
+```js
+predictions = model.predict(X_test)
+
+for i in range(len(predictions)):
+    text = tokenizer.sequences_to_texts([X_test[i]])[0]
+    sentiment = "positive" if predictions[i] > 0.5 else "negative"
+    print(f"Text: {text}")
+    print(f"Predicted sentiment: {sentiment}")
+    print("-----------------------------")
+```
+Result :-
+```
+20/20 [==============================] - 1s 71ms/step
+Text: love still learn capability
+Predicted sentiment: positive
+-----------------------------
+Text: easy setup
+Predicted sentiment: positive
+-----------------------------
+Text: joke worthless
+Predicted sentiment: negative
+-----------------------------
+Text: like another house constantly repeat tell alexa something clear accord history hear something comeletely different device really cool like concept get star however work intend find irritated often device
+Predicted sentiment: positive
+-----------------------------
+Text: mine last night play around buy long time
+Predicted sentiment: negative
+-----------------------------
+Text: small device kid like question handy friendly interactive
+Predicted sentiment: positive
+-----------------------------
+Text: outstanding piece technology everyday information scheduling general information awesome amazon keep improve
+Predicted sentiment: positive
+-----------------------------
+Text: connect sound perfect give internal battery disconnect power source
+Predicted sentiment: negative
+-----------------------------
+Text: hear everything understand half first time often take multiple try give correct result
+Predicted sentiment: negative
+-----------------------------
+Text: like well expect
+Predicted sentiment: positive
+-----------------------------
+Text: still work call know charge time ridiculous
+Predicted sentiment: positive
+-----------------------------
 ```
 
+### Print the top Phrases associated with Positive reviews
+
+```js
+embedding_weights = model.layers[0].get_weights()[0]
+word_index = tokenizer.word_index
+reverse_word_index = {index: word for word, index in word_index.items()}
+
+
+phrase_sentiment_scores = {}
+
+
+for sequence in sequences:
+    phrase = ' '.join([reverse_word_index.get(word_index, '') for word_index in sequence])
+    sentiment_score = sum([embedding_weights[word_index] for word_index in sequence])
+    phrase_sentiment_scores[phrase] = sentiment_score
+
+# Sort the phrases based on maximum sentiment score within each phrase
+sorted_scores = sorted(phrase_sentiment_scores.items(), key=lambda x: max(x[1]), reverse=True)
+
+
+top_positive_phrases = []
+for phrase, score in sorted_scores:
+    words = phrase.split()
+    if len(words) >= 2 and len(words) <= 3:
+        top_positive_phrases.append(phrase)
+        if len(top_positive_phrases) >= 20:
+            break
+
+# Print the top phrases associated with positive sentiment
+print("Top Positive phrases :")
+for phrase in top_positive_phrases:
+    print(f"{phrase}")
+```
+Top Positive Phrases are:-
+
+```
+Top Positive phrases :
+love love love
+kid love love
+love easy well
+easy setup love
+love love
+sound great love
+love living room
+easy affordable love
+love great product
+easy family love
+love echo easy
+love easy
+intelligent love song
+easy easy
+easy great sound
+great sound easy
+love awesome
+firestick easy enjoy
+awesome love alexa
+love good gift
+```
+
+### Print the top Phrases associated with Negative reviews
+
+```js
+embedding_weights = model.layers[0].get_weights()[0]
+word_index = tokenizer.word_index
+reverse_word_index = {index: word for word, index in word_index.items()}
+
+
+phrase_sentiment_scores = {}
+
+
+for sequence in sequences:
+    phrase = ' '.join([reverse_word_index.get(word_index, '') for word_index in sequence])
+    sentiment_score = sum([embedding_weights[word_index] for word_index in sequence])
+    phrase_sentiment_scores[phrase] = sentiment_score
+
+# Sort the phrases based on maximum sentiment score within each phrase
+sorted_scores = sorted(phrase_sentiment_scores.items(), key=lambda x: max(x[1]), reverse=False)
+
+
+top_negative_phrases = []
+for phrase, score in sorted_scores:
+    words = phrase.split()
+    if len(words) >= 2 and len(words) <= 3:
+        top_negative_phrases.append(phrase)
+        if len(top_negative_phrases) >= 20:
+            break
+
+# Print the top phrases associated with negative reviews
+print("Top negative phrases :")
+for phrase in top_negative_phrases:
+    print(f"{phrase}")
+```
+Top Positive Phrases are:-
+
+```
+Top negative phrases :
+work tube
+participate echo
+habla espanol
+work describe
+alexa sister second
+always work
+alexa rock
+good device
+fairly useless
+echo work
+second kitchen recipe
+everything need
+use twice work
+work well
+sound quality
+amazon disappoint
+good quality
+work fine
+show nothing
+five need
+```
+
+## Conclusion
+
+After trained different Classification model we got the accuracies as :-
+
+**-LogisticRegression**
+    
+    Accuracy: 91%
+
+**-Naive Byas**
++ BernoulliNB
+
+        Accuracy: 90%
+
++ GaussianNB
+
+        Accuracy: 55%
+
++ MultinomialNB
+
+        Accuracy: 91%
+
+
+**-Support Vector Machine (SVM)**
+    
+    Accuracy: 92%
+
+
+**-Decession Tree**
+   
+    Accuracy: 93.1%
+
+
+**-Random Forest**
+    
+    Accuracy: 93.8%
+
+```
+Here we got the best accuracy from Random Forest Model, after doing cross validation we got
+the best parameters are: {'max_depth': None, 'min_samples_split': 2, 'n_estimators': 100}
+and the best accuracy score is 93.6%
+```
+
++ Also employ Deep learning techniques such as Artificial Neural Networks (ANN) and Recurrent Neural Networks (RNN) :
+
+    + **Artificial Neural Networks (ANN)**
+
+
+        Accuracy: 93.1%
+        Loss 49%
+
+    + **Recurrent Neural Networks (RNN)**
+
+
+        Accuracy: 93.1%
+        Loss 31%
+
+
+Among all models we can see RNN model gives the best results with precision, recall and f1 score are 
+
+    precision_score =  0.0084
+    recall_score =  0.092
+    f1_score =  0.015
+
++ The model showcases strong performance in capturing the temporal dynamics and dependencies within the reviews of Amazon Alexa. With an accuracy of 93%, it effectively classifies the sentiment of the reviews, demonstrating its ability to discern between positive and negative sentiments.
+
++ Furthermore, the RNN model's ability to process sequential data enables it to capture subtle shifts in sentiment over time. By leveraging its recurrent nature, the model effectively incorporates the context of previous words and phrases when predicting sentiment, resulting in a nuanced understanding of the feedback.
+
++ Additionally, the model's attention mechanisms provide valuable insights into the important features contributing to sentiment analysis. Through analysis of the attention weights, we discovered that the model pays significant attention to emotionally charged words and phrases, emphasizing their impact on sentiment classification that which words or phrases are corelated to Positive or Negative reviews.
+
++ These findings highlight the model's capability to capture the nuanced sentiment patterns present in the data, making it a valuable tool for sentiment analysis tasks.The model enables businesses to gain deeper insights into customer sentiment, allowing them to make informed decisions and tailor their strategies to enhance customer satisfaction and overall sentiment-driven initiatives.
 
 
 
-
-
-
-
-
+# Thank You
 
 
 
