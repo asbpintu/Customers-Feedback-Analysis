@@ -2,6 +2,12 @@
 
 The project involves conducting customer feedback analysis for Amazon Alexa. The goal is to analyze and understand customer sentiments expressed in their reviews or feedback about the Amazon Alexa product or service. The project utilizes various machine learning and natural language processing techniques to accomplish this task.
 
+![alexa](image/alexa_m.png)
+
+![commmm](image/review1.png)
+![comm](image/reviews2.png) 
+![comm](image/reviews3.png)
+
 ### Necessary Packages
 ```js
 # Import Packages
@@ -88,6 +94,8 @@ y = data['target']
 ```js
 print(x.head(10))
 ```
+
+
 ```
 0                                        Love my Echo!
 1                                            Loved it!
@@ -343,6 +351,7 @@ X_t = pd.DataFrame(X , columns= feature_names)
 ```js
 X_train, X_test, y_train, y_test = train_test_split(X_t, y, test_size = 0.20, random_state = 0)
 ```
+![alexaaa](image/alexa_s.jpg)
 
 ## Model Fitting
 The project leverages a variety of supervised learning algorithms, including logistic regression (logit), support vector machines (SVM), naive Bayes, decision trees, and random forests, to train models using annotated customer feedback data.
@@ -504,6 +513,7 @@ print("Best Score:", grid_search.best_score_)
 ```
 Best Score: 0.9365079365079365
 
+![alllexa](image/alexa_s1.jpg)
 
 ## Deep Learning Models Fitting
 
@@ -929,6 +939,7 @@ work fine
 show nothing
 five need
 ```
+![Alllexxa](image/alexa_s2.jpg)
 
 ## Conclusion
 
